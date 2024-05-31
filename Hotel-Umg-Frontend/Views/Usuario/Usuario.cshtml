@@ -1,4 +1,4 @@
-﻿@model List<Hotel_Umg_Frontend.Models.Usuario>
+﻿@model Hotel_Umg_Frontend.Controllers.UsuarioController.Respuesta
 
 <div class="container d-flex mb-5">
     <div class="page-header d-flex w-100 justify-content-between">
@@ -30,7 +30,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="Empleado" class="form-label">Empleado</label>
-                        <input type="empleado" class="form-control" id="Empleado" name="Empleado" required>
+                        <select class="form-control" id="Empleado" name="idEmpleado">
+                            @if (Model.empleados.Count > 0)
+                            {
+                                foreach (var empleado in Model.empleados){
+                                    <option value="@empleado.idEmpleado">@empleado.nombre</option>
+                                }
+                            }
+
+                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -48,21 +56,29 @@
             <thead>
                 <tr>
                     <th>Nombre de usuario</th>
+                    <th>Apellido</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Count > 0)
+                @if (Model.usuarios.Count > 0)
+
                 {
-                    foreach (var usuario in Model)
+                    foreach (var usuario in Model.usuarios)
                     {
                         <tr>
                             <td>@usuario.nombreUsuario</td>
+                            <td>@usuario.Empleado.apellido</td>
+
+
                             <td>
                                 <button type="button" class="btn btn-primary btn-xs" data-bs-toggle="modal" data-bs-target="#editarModal-@usuario.idUsuario"><span class="glyphicon glyphicon-edit"></span> Editar</button>
                                 <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal" data-bs-target="#eliminarModal-@usuario.idUsuario"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar</button>
                             </td>
                         </tr>
+
+
+
                         <!-- Editar Modal -->
                         <div class="modal fade" id="editarModal-@usuario.idUsuario" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -75,6 +91,7 @@
                                         @using (Html.BeginForm("Editar", "Usuario", FormMethod.Post))
                                         {
                                             @Html.Hidden("idUsuario", usuario.idUsuario)
+                                            @Html.Hidden("idEmpleado", usuario.idEmpleado)
                                             <div class="mb-3">
                                                 <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
                                                 <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" value="@usuario.nombreUsuario" required readonly>

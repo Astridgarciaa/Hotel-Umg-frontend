@@ -9,7 +9,12 @@ namespace Hotel_Umg_Frontend.Models
 {
     public class Hotel
     {
-        public int idDetalleReservacion { get; set; }
-        public DateTime fechaReserva { get; set; }
+        public int idHotel { get; set; }
+        public string nombreHotel { get; set; }
+        public string direccion { get; set; }
+        public string telefono { get; set; }
+        public string correoElectronico { get; set; }
     }
 }
+
+

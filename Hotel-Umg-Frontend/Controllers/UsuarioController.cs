@@ -8,8 +8,20 @@ using System.Web.Mvc;
 
 namespace Hotel_Umg_Frontend.Controllers
 {
+
     public class UsuarioController : Controller
     {
+        public class Respuesta
+        {
+            public List<Usuario> usuarios { get; set; }
+            public List<Empleado> empleados { get; set; }
+
+            public Respuesta(List<Usuario> usuarios, List<Empleado> empleados)
+            {
+                this.usuarios=usuarios;
+                this.empleados=empleados;
+            }
+        }
         private string urlApi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
 
         // GET: Usuario
@@ -22,7 +34,7 @@ namespace Hotel_Umg_Frontend.Controllers
         {
             ViewBag.Message = "Usuarios";
             List<Usuario> usuarios = new List<Usuario>();
-
+            List<Empleado> empleados = new List<Empleado>();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
@@ -39,6 +51,16 @@ namespace Hotel_Umg_Frontend.Controllers
                     {
                         ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
                     }
+
+                    HttpResponseMessage responseEmpleados = await client.GetAsync("/Api/empleado");
+                    if (responseEmpleados.IsSuccessStatusCode)
+                    {
+                        empleados = await responseEmpleados.Content.ReadAsAsync<List<Empleado>>();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
+                    }
                 }
                 catch (HttpRequestException e)
                 {
@@ -49,7 +71,8 @@ namespace Hotel_Umg_Frontend.Controllers
                     ModelState.AddModelError(string.Empty, $"Ocurrió un error inesperado: {e.Message}");
                 }
             }
-            return View(usuarios);
+            Respuesta respuesta = new Respuesta(usuarios, empleados);
+            return View(respuesta);
         }
 
         // Crear Usuario
@@ -83,7 +106,7 @@ namespace Hotel_Umg_Frontend.Controllers
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/usuario/{usuarioEditado.nombreUsuario}", usuarioEditado);
+                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/usuario/{usuarioEditado.idUsuario}", usuarioEditado);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Usuario");
@@ -98,14 +121,14 @@ namespace Hotel_Umg_Frontend.Controllers
 
         // Eliminar Usuario
         [HttpPost]
-        public async Task<ActionResult> Eliminar(string NombreDeUsuario)
+        public async Task<ActionResult> Eliminar(string idUsuario)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.DeleteAsync($"/Api/usuario/{NombreDeUsuario}");
+                HttpResponseMessage response = await client.DeleteAsync($"/Api/usuario/{idUsuario}");
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Usuario");
