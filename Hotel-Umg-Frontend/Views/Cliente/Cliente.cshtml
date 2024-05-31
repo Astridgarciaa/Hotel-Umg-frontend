@@ -1,0 +1,164 @@
+﻿@model Hotel_Umg_Frontend.Controllers.ClienteController.Respuesta
+
+<div class="container d-flex mb-5">
+    <div class="page-header d-flex w-100 justify-content-between">
+        <h1>Clientes</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearModal">
+            Nuevo cliente
+        </button>
+    </div>
+</div>
+
+<!-- Crear -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="crearModalLabel">Crear un nuevo cliente</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Crear", "Cliente", FormMethod.Post))
+                {
+                    <div class="mb-3">
+                        <label for="Nombre" class="form-label">Nombre del cliente</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Apellido" class="form-label">Apellido del cliente</label>
+                        <input type="text" class="form-control" id="Apellido" name="Apellido" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="telefono" name="telefono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="correoElectronico" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correoElectronico" name="correoElectronico" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nombre del cliente</th>
+                    <th>Apellido</th>
+                    <th>Direccion </th>
+                    <th>Telefono</th>
+                    <th>Correo Electrónico</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.clientes.Count > 0)
+
+                {
+                    foreach (var cliente in Model.clientes)
+                    {
+                        <tr>
+                            <td>@cliente.Nombre</td>
+                            <td>@cliente.Apellido</td>
+                            <td>@cliente.Direccion</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.correoElectronico</td>
+
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs" data-bs-toggle="modal" data-bs-target="#editarModal-@cliente.idCliente"><span class="glyphicon glyphicon-edit"></span> Editar</button>
+                                <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal" data-bs-target="#eliminarModal-@cliente.idCliente"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar</button>
+                            </td>
+                        </tr>
+
+
+
+                        <!-- Editar Modal -->
+                        <div class="modal fade" id="editarModal-@cliente.idCliente" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="editarModalLabel">Editar usuario</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @using (Html.BeginForm("Editar", "Cliente", FormMethod.Post))
+                                        {
+                                            @Html.Hidden("idCliente", cliente.idCliente)
+                                            // @Html.Hidden("idEmpleado", usuario.idEmpleado)
+                                            <div class="mb-3">
+                                                <label for="Nombre" class="form-label">Nombre del Cliente</label>
+                                                <input type="text" class="form-control" id="Nombre" name="nombreUsuario" value="@cliente.Nombre" required readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="Apellido" class="form-label">Apellido</label>
+                                                <input type="text" class="form-control" id="Apellido" name="Apellido" value="@cliente.Apellido" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="Direccion" class="form-label">Direccion</label>
+                                                <input type="text" class="form-control" id="Direccion" name="Direccion" value="@cliente.Direccion" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="Telefono" class="form-label">Telefono</label>
+                                                <input type="text" class="form-control" id="Telefono" name="Telefono" value="@cliente.Telefono" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="correoElectronico" class="form-label">Correo Electrónico</label>
+                                                <input type="text" class="form-control" id="correoElectronico" name="correoElectronico" value="@cliente.correoElectronico" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Eliminar Modal -->
+                        <div class="modal fade" id="eliminarModal-@cliente.idCliente" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="eliminarModalLabel">Eliminar cliente</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @using (Html.BeginForm("Eliminar", "Cliente", FormMethod.Post))
+                                        {
+                                            @Html.Hidden("idCliente", cliente.idCliente)
+                                            <p>¿Está seguro que desea eliminar al cliente <strong>@cliente.Nombre</strong>?</p>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2" class="text-center">No hay clientes registrados.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,171 @@
+﻿@model Hotel_Umg_Frontend.Controllers.DetalleController.Respuesta
+
+<div class="container d-flex mb-5">
+    <div class="page-header d-flex w-100 justify-content-between">
+        <h1>Detalles de Reservacion</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearModal">
+            Nuevo detalle de reservacion
+        </button>
+    </div>
+</div>
+
+<!-- Crear -->
+<div class="modal fade" id="crearModal" tabindex="-1" aria-labelledby="crearModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="crearModalLabel">Crear un nuevo detalle de reservacion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Crear", "detalle", FormMethod.Post))
+                {
+                    <div class="mb-3">
+                        <label for="idDetalle" class="form-label">ID del detalle de la reservacion</label>
+                        <input type="text" class="form-control" id="idDetalle" name="idDetalle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idreservacion" class="form-label">ID de la reservacion</label>
+                        <input type="text" class="form-control" id="idreservacion" name="idreservacion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="idhabitacion" class="form-label">ID de la habitacion</label>
+                        <input type="text" class="form-control" id="idhabitacion" name="idhabitacion" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaReserva" class="form-label">Fehca de la reserva</label>
+                        <input type="datetime" class="form-control" id="fechaReserva" name="fechaReserva" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Reservacion" class="form-label">Reservacion</label>
+                        <select class="form-control" id="Reservacion" name="idReservacion">
+                            @if (Model.reservaciones.Count > 0)
+                            {
+                                foreach (var reservacion in Model.reservaciones)
+                                {
+                                    <option value="@reservacion.idReservacion">@reservacion.idReservacion</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Habitacion" class="form-label">Habitacion</label>
+                        <select class="form-control" id="Habitacion" name="idHabitacion">
+                            @if (Model.habitaciones.Count > 0)
+                            {
+                                foreach (var habitacion in Model.habitaciones)
+                                {
+                                    <option value="@habitacion.idHabitacion">@habitacion.idHabitacion</option>
+                                }
+                            }
+
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id Detalle</th>
+                    <th>Id Reservacion</th>
+                    <th>Id Habitacion</th>
+                    <th>Fecha de Reserva</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.detalles.Count > 0)
+
+                {
+                    foreach (var detalle in Model.detalles)
+                    {
+                        <tr>
+                            <td>@detalle.idDetalle</td>
+                            <td>@detalle.idhabitacion</td>
+                            <td>@detalle.idhabitacion</td>
+                            <td>@detalle.fechaReserva</td>
+
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs" data-bs-toggle="modal" data-bs-target="#editarModal-@detalle.idDetalle"><span class="glyphicon glyphicon-edit"></span> Editar</button>
+                                <button type="button" class="btn btn-danger btn-xs" data-bs-toggle="modal" data-bs-target="#eliminarModal-@detalle.idDetalle"><span class="glyphicon glyphicon-remove-circle"></span> Eliminar</button>
+                            </td>
+                        </tr>
+
+
+
+                        <!-- Editar Modal -->
+                        <div class="modal fade" id="editarModal-@detalle.idDetalle" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="editarModalLabel">Editar detalle de la reservacion</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @using (Html.BeginForm("Editar", "detalle", FormMethod.Post))
+                                        {
+                                            @Html.Hidden("idDetalle", detalle.idDetalle)
+                                            @Html.Hidden("idreservacion", detalle.idreservacion)
+                                            @Html.Hidden("idhabitacion", detalle.idhabitacion)
+                                            <div class="mb-3">
+                                                <label for="idDetalle" class="form-label">Id del detalle de la reservacion</label>
+                                                <input type="text" class="form-control" id="nombreUsuario" name="idDetalle" value="@detalle.idDetalle" required readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="idreservacion" class="form-label">Id de la reservacion</label>
+                                                <input type="text class="form-control" id="idreservacion" name="idreservacion" value="@detalle.idreservacion" required>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Eliminar Modal -->
+                        <div class="modal fade" id="eliminarModal-@detalle.idDetalle" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="eliminarModalLabel">Eliminar el detalle de la reservacion</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @using (Html.BeginForm("Eliminar", "detalle", FormMethod.Post))
+                                        {
+                                            @Html.Hidden("idDetalle", detalle.idDetalle)
+                                            <p>¿Está seguro que desea eliminar el detalle de la reservacion? <strong>@detalle.idDetalle</strong>?</p>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2" class="text-center">No hay detalle de reservacion registrados.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
