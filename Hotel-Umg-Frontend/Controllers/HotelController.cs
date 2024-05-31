@@ -83,7 +83,7 @@ namespace Hotel_Umg_Frontend.Controllers
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/hotel/{hotelEditado.nombreHotel}", hotelEditado);
+                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/hotel/{hotelEditado.idHotel}", hotelEditado);
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Hotel");
@@ -96,16 +96,16 @@ namespace Hotel_Umg_Frontend.Controllers
             }
         }
 
-        // Eliminar Usuario
+        // Eliminar Hotel
         [HttpPost]
-        public async Task<ActionResult> Eliminar(string nombreHotel)
+        public async Task<ActionResult> Eliminar(string idHotel)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.DeleteAsync($"/Api/hotel/{nombreHotel}");
+                HttpResponseMessage response = await client.DeleteAsync($"/Api/hotel/{idHotel}");
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Hotel");
