@@ -9,32 +9,32 @@ using System.Web.Mvc;
 namespace Hotel_Umg_Frontend.Controllers
 {
 
-    public class UsuarioController : Controller
+    public class EmpleadoController : Controller
     {
         public class Respuesta
         {
-            public List<Usuario> usuarios { get; set; }
             public List<Empleado> empleados { get; set; }
+            public List<Hotel> hoteles { get; set; }
 
-            public Respuesta(List<Usuario> usuarios, List<Empleado> empleados)
+            public Respuesta(List<Empleado> empleados, List<Hotel> hoteles)
             {
-                this.usuarios=usuarios;
                 this.empleados=empleados;
+                this.hoteles=hoteles;
             }
         }
         private string urlApi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
 
-        // GET: Usuario
+        // GET: Empleado
         public ActionResult Index()
         {
             return View();
         }
 
-        public async Task<ActionResult> Usuario()
+        public async Task<ActionResult> Empleado()
         {
-            ViewBag.Message = "Usuarios";
-            List<Usuario> usuarios = new List<Usuario>();
+            ViewBag.Message = "Empleados";
             List<Empleado> empleados = new List<Empleado>();
+            List<Hotel> hoteles = new List<Hotel>();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
@@ -42,20 +42,20 @@ namespace Hotel_Umg_Frontend.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
                 {
-                    HttpResponseMessage response = await client.GetAsync("/Api/usuario");
+                    HttpResponseMessage response = await client.GetAsync("/Api/empleado");
                     if (response.IsSuccessStatusCode)
                     {
-                        usuarios = await response.Content.ReadAsAsync<List<Usuario>>();
+                        empleados = await response.Content.ReadAsAsync<List<Empleado>>();
                     }
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
                     }
 
-                    HttpResponseMessage responseEmpleados = await client.GetAsync("/Api/empleado");
-                    if (responseEmpleados.IsSuccessStatusCode)
+                    HttpResponseMessage responseHoteles = await client.GetAsync("/Api/hotel");
+                    if (responseHoteles.IsSuccessStatusCode)
                     {
-                        empleados = await responseEmpleados.Content.ReadAsAsync<List<Empleado>>();
+                        hoteles = await responseHoteles.Content.ReadAsAsync<List<Hotel>>();
                     }
                     else
                     {
@@ -71,72 +71,72 @@ namespace Hotel_Umg_Frontend.Controllers
                     ModelState.AddModelError(string.Empty, $"Ocurrió un error inesperado: {e.Message}");
                 }
             }
-            Respuesta respuesta = new Respuesta(usuarios, empleados);
+            Respuesta respuesta = new Respuesta(empleados, hoteles);
             return View(respuesta);
         }
 
-        // Crear Usuario
+        // Crear Empleado
         [HttpPost]
-        public async Task<ActionResult> Crear(Usuario nuevoUsuario)
+        public async Task<ActionResult> Crear(Empleado nuevoEmpleado)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PostAsJsonAsync("/Api/usuario", nuevoUsuario);
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Api/empleado", nuevoEmpleado);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("Empleado");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al crear el usuario");
-                    return View(nuevoUsuario);
+                    ModelState.AddModelError(string.Empty, "Error al crear el empleado");
+                    return View(nuevoEmpleado);
                 }
             }
         }
 
-        // Editar Usuario
+        // Editar Empleado
         [HttpPost]
-        public async Task<ActionResult> Editar(Usuario usuarioEditado)
+        public async Task<ActionResult> Editar(Empleado empleadoEditado)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/usuario/{usuarioEditado.idUsuario}", usuarioEditado);
+                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/empleado/{empleadoEditado.idEmpleado}", empleadoEditado);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("Empleado");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al editar el usuario");
-                    return View(usuarioEditado);
+                    ModelState.AddModelError(string.Empty, "Error al editar el empleado");
+                    return View(empleadoEditado);
                 }
             }
         }
 
-        // Eliminar Usuario
+        // Eliminar Empleado
         [HttpPost]
-        public async Task<ActionResult> Eliminar(string idUsuario)
+        public async Task<ActionResult> Eliminar(string idEmpleado)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.DeleteAsync($"/Api/usuario/{idUsuario}");
+                HttpResponseMessage response = await client.DeleteAsync($"/Api/empleado/{idEmpleado}");
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("Empleado");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al eliminar el usuario");
-                    return RedirectToAction("Usuario");
+                    ModelState.AddModelError(string.Empty, "Error al eliminar el Empleado");
+                    return RedirectToAction("Empleado");
                 }
             }
         }

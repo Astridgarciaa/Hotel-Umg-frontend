@@ -17,5 +17,6 @@ namespace Hotel_Umg_Frontend.Models
         public string password { get; set; }
 
         public int idEmpleado { get; set; }
+        public virtual Empleado Empleado { get; set; }
     }
 }
