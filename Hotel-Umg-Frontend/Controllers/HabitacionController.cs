@@ -13,28 +13,31 @@ namespace Hotel_Umg_Frontend.Controllers
     {
         public class Respuesta
         {
-            public List<Usuario> usuarios { get; set; }
-            public List<Empleado> empleados { get; set; }
+            public List<Habitacion> habitaciones { get; set; }
+            public List<Hotel> hoteles { get; set; }
+            public List<TipoHabitacion> tiposhabitaciones { get; set; }
 
-            public Respuesta(List<Usuario> usuarios, List<Empleado> empleados)
+            public Respuesta(List<Habitacion> habitaciones, List<Hotel> hoteles, List<TipoHabitacion> tiposhabitaciones)
             {
-                this.usuarios=usuarios;
-                this.empleados=empleados;
+                this.habitaciones=habitaciones;
+                this.hoteles=hoteles;
+                this.tiposhabitaciones = tiposhabitaciones;
             }
         }
         private string urlApi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
 
-        // GET: Usuario
+        // GET: Habitaciones
         public ActionResult Index()
         {
             return View();
         }
 
-        public async Task<ActionResult> Usuario()
+        public async Task<ActionResult> Habitacion()
         {
-            ViewBag.Message = "Usuarios";
-            List<Usuario> usuarios = new List<Usuario>();
-            List<Empleado> empleados = new List<Empleado>();
+            ViewBag.Message = "Habitaciones";
+            List<Habitacion> habitaciones = new List<Habitacion>();
+            List<Hotel> hoteles = new List<Hotel>();
+            List<TipoHabitacion> tiposhabitaciones = new List<TipoHabitacion>();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
@@ -42,25 +45,36 @@ namespace Hotel_Umg_Frontend.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
                 {
-                    HttpResponseMessage response = await client.GetAsync("/Api/usuario");
+                    HttpResponseMessage response = await client.GetAsync("/Api/Habitacion");
                     if (response.IsSuccessStatusCode)
                     {
-                        usuarios = await response.Content.ReadAsAsync<List<Usuario>>();
+                        habitaciones = await response.Content.ReadAsAsync<List<Habitacion>>();
                     }
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
                     }
 
-                    HttpResponseMessage responseEmpleados = await client.GetAsync("/Api/empleado");
-                    if (responseEmpleados.IsSuccessStatusCode)
+                    HttpResponseMessage responseHotel = await client.GetAsync("/Api/Hotel");
+                    if (responseHotel.IsSuccessStatusCode)
                     {
-                        empleados = await responseEmpleados.Content.ReadAsAsync<List<Empleado>>();
+                        hoteles = await responseHotel.Content.ReadAsAsync<List<Hotel>>();
                     }
                     else
                     {
                         ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
                     }
+
+                    HttpResponseMessage responseTipoHabitacion = await client.GetAsync("/Api/TipoHabitacion");
+                    if (responseHotel.IsSuccessStatusCode)
+                    {
+                        tiposhabitaciones = await responseTipoHabitacion.Content.ReadAsAsync<List<TipoHabitacion>>();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, $"Error en la solicitud al API. Código de estado: {response.StatusCode}");
+                    }
+
                 }
                 catch (HttpRequestException e)
                 {
@@ -71,72 +85,72 @@ namespace Hotel_Umg_Frontend.Controllers
                     ModelState.AddModelError(string.Empty, $"Ocurrió un error inesperado: {e.Message}");
                 }
             }
-            Respuesta respuesta = new Respuesta(usuarios, empleados);
+            Respuesta respuesta = new Respuesta(habitaciones,hoteles,tiposhabitaciones);
             return View(respuesta);
         }
 
         // Crear Usuario
         [HttpPost]
-        public async Task<ActionResult> Crear(Usuario nuevoUsuario)
+        public async Task<ActionResult> Crear(Habitacion nuevaHabitacion)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PostAsJsonAsync("/Api/usuario", nuevoUsuario);
+                HttpResponseMessage response = await client.PostAsJsonAsync("/Api/Habitacion", nuevaHabitacion);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("habitacion");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al crear el usuario");
-                    return View(nuevoUsuario);
+                    ModelState.AddModelError(string.Empty, "Error al crear el Habitacion");
+                    return View(nuevaHabitacion);
                 }
             }
         }
 
         // Editar Usuario
         [HttpPost]
-        public async Task<ActionResult> Editar(Usuario usuarioEditado)
+        public async Task<ActionResult> Editar(Habitacion habitacionEditado)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/usuario/{usuarioEditado.idUsuario}", usuarioEditado);
+                HttpResponseMessage response = await client.PutAsJsonAsync($"/Api/Habitacion/{habitacionEditado.idHabitacion}", habitacionEditado);
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("Habitacion");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al editar el usuario");
-                    return View(usuarioEditado);
+                    ModelState.AddModelError(string.Empty, "Error al editar la Habitación");
+                    return View(habitacionEditado);
                 }
             }
         }
 
         // Eliminar Usuario
         [HttpPost]
-        public async Task<ActionResult> Eliminar(string idUsuario)
+        public async Task<ActionResult> Eliminar(string idHabitacion)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(urlApi);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage response = await client.DeleteAsync($"/Api/usuario/{idUsuario}");
+                HttpResponseMessage response = await client.DeleteAsync($"/Api/Habitacion/{idHabitacion}");
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Usuario");
+                    return RedirectToAction("Habitacion");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Error al eliminar el usuario");
-                    return RedirectToAction("Usuario");
+                    ModelState.AddModelError(string.Empty, "Error al eliminar la Habitación");
+                    return RedirectToAction("Habitacion");
                 }
             }
         }

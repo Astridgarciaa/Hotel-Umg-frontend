@@ -7,14 +7,11 @@ using System.Web;
 
 namespace Hotel_Umg_Frontend.Models
 {
-    public class Habitacion
+    public class TipoHabitacion
     {
-        public int idHabitacion { get; set; }
-        public int idHotel { get; set; }
-        public virtual Hotel Hotel {  get; set; }
         public int idTipoHabitacion { get; set; }
-        public virtual TipoHabitacion TipoHabitacion{ get; set; }
-        public int disponibilidad { get; set; }
+        public string nombreTipo { get; set; }
+        public string descripcion { get; set; }
 
     }
 }

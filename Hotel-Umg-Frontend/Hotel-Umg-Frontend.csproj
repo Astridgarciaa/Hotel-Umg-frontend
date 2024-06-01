@@ -156,6 +156,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\TipoHabitacion.cs" />
     <Compile Include="Models\Habitacion.cs" />
     <Compile Include="Models\Empleado.cs" />
     <Compile Include="Models\Hotel.cs" />
@@ -216,6 +217,7 @@
     <Content Include="Views\Usuario\Usuario.cshtml" />
     <Content Include="Views\Hotel\Hotel.cshtml" />
     <Content Include="Views\Empleado\Empleado.cshtml" />
+    <Content Include="Views\Habitacion\Habitacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
