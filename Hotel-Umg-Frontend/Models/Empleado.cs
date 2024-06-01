@@ -16,6 +16,9 @@ namespace Hotel_Umg_Frontend.Models
         public decimal salario { get; set; }
         public DateTime fechaContratacion { get; set; }
 
+        public int idHotel { get; set; }
+        public virtual Hotel Hotel {  get; set; }
+
     }
 }
 
